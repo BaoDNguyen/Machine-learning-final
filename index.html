@@ -11,6 +11,7 @@
     <script src="lib/d3/d3.min.js"></script>
     <script src="lib/d3.tip.js"></script>
     <script src="lib/d3-delaunay.js"></script>
+    <script src="lib/d3-selection-multi.v1.min.js"></script>
     <script src="lib/underscore-min.js"></script>
     <script src="lib/simple-statistics.min.js"></script>
 <!--css-->
@@ -78,6 +79,15 @@
                             <label class="col-5" for="colorMode">Color by: </label>
                             <select class="col-7" id="colorMode">
                             </select>
+                            <div class="col-12 row" id="metricHolder" style="padding: 0;padding-top:10px">
+                                <span class="col-3" style="padding: 0px;font-weight: bold">Metric</span>
+                                <div class="metricSum col-9">
+                                    <svg class="plotHolder"></svg>
+                                </div>
+                            </div>
+                            <div class="col-12" id="conceptHolder" style="padding: 0;padding-top:10px">
+                                <h6 style="font-weight: bold;">Concepts:</h6>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body row" id="analyticOnToolbarHolder">
@@ -94,6 +104,8 @@
 
 <!--  source code here  -->
 <script src="src/js/radarChart.js"></script>
+<script src="lib/violinChart.js"></script>
+
 
 <script src="src/js/setting.js"></script>
 <script src="src/js/readFile.js"></script>
