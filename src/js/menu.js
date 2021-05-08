@@ -2,7 +2,16 @@ function initMenu(){
     $('#legendHolder').draggable({ handle: ".card-header" ,containment: "parent", scroll: false });
     d3.select('#vizMode').on('change',function(){
         viz.vizMode(this.value);
-    })
+    });
+    d3.select('#colorMode')
+        .on('change',function(){
+            viz.colorMode(this.value);
+        })
+        .selectAll('option')
+        .data(['metric',...concepts])
+        .join('option')
+        .attr('value',d=>d)
+        .text(d=>d);
 }
 
 function updateProcess(message,div){

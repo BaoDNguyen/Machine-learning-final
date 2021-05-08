@@ -26,6 +26,7 @@ const vizControl = function(){
         },
         animationTime:1000,
         color:{},
+        imageSize:20,
         radaropt : {
             mini:true,
             levels:6,
@@ -48,6 +49,7 @@ const vizControl = function(){
     let yscale = d3.scaleLinear().range([0, graphicopt.heightG()]);
     let color = d3.scaleSequential()
         .interpolator(d3.interpolateSpectral).domain([1,0]);
+    let colorMode = 'metric'
     let calFunc = cal_PCA;
     master.init = function(){
         graphicopt.width = d3.select(maindiv).node().getBoundingClientRect().width;
@@ -65,6 +67,19 @@ const vizControl = function(){
                 .attr('class','content');
             g.append('g').attr('class','drawArea');
             g.append('g').attr('class','axisHolder').append('defs')
+                .selectAll('marker').data(['black','blue'])
+                .join('marker')
+                .attr('id', d=>'arrow'+fixName2Class(d))
+                .attr("refX", 6)
+                .attr("refY", 6)
+                .attr("markerWidth", 30)
+                .attr("markerHeight", 30)
+                .attr("orient", "auto")
+                .selectAll('path').data(d=>[d])
+                .join("path")
+                .attr("d", "M 0 0 12 6 0 12 3 6")
+                .style("fill", d=>d);
+            g.append('g').attr('class','front');
             g.call(tooltip);
             let startZoom = d3.zoomIdentity;
             startZoom.x = 0;
@@ -169,33 +184,37 @@ const vizControl = function(){
         const items = g.select('.drawArea').selectAll('g.item')
             .data(data)
             .join('g')
-            .attr('class','item');
+            .attr('class','item')
+            .attr('transform',d=>`translate(${xscale(d.x)},${yscale(d.y)})`)
+            .on('mouseover',function(d){
+                d3.select('#detailItem').append('img')
+                    .attr('src',d.id)
+                    .attr('class','img-fluid');
+                g.select('.drawArea').selectAll('g.item').style('opacity',0.1);
+                d3.select(this).style('opacity',1);
+            })
+            .on('mouseleave',function(d){
+                d3.select('#detailItem').selectAll('*').remove();
+                g.select('.drawArea').selectAll('g.item').style('opacity',null)
+            });
         items.selectAll('circle')
             .data(d=>[d])
             .join('circle')
-            .attr('cx',d=>xscale(d.x))
-            .attr('cy',d=>yscale(d.y))
             .attr('r',5)
-            .attr('fill',d=>color(d.metric));
+            .attr('fill',d=>color(d[colorMode]));
+        items.selectAll('image')
+            .data(d=>[d])
+            .join('image')
+            .attr('x',-graphicopt.imageSize/2)
+            .attr('y',-graphicopt.imageSize/2)
+            .attr('width',graphicopt.imageSize)
+            .attr('height',graphicopt.imageSize)
+            .attr('xlink:href',d=>d.id)
 
         if (vizMode!=='pca') {
             axis = [];
         }
         // add axis
-        const colorItem = d3.scaleOrdinal(d3.schemeCategory10).domain(feature.map(d=>d));
-        g.select('.axisHolder').select('defs')
-            .selectAll('marker').data(colorItem.domain())
-            .join('marker')
-            .attr('id', d=>'arrow'+fixName2Class(d))
-            .attr("refX", 6)
-            .attr("refY", 6)
-            .attr("markerWidth", 30)
-            .attr("markerHeight", 30)
-            .attr("orient", "auto")
-            .selectAll('path').data(d=>[d])
-            .join("path")
-            .attr("d", "M 0 0 12 6 0 12 3 6")
-            .style("fill", d=>colorItem(d));
         g.select('.axisHolder').selectAll('line.axis').data(axis)
             .join('line')
             .attr('class','axis')
@@ -203,8 +222,8 @@ const vizControl = function(){
             .attr('y1',d=>yscale(d.y1))
             .attr('x2',d=>xscale((d.x2-d.x1)*d.scale+d.x1))
             .attr('y2',d=>yscale((d.y2-d.y1)*d.scale+d.y1))
-            .attr('marker-end', d=>`url(#arrow${fixName2Class(d.name)})`)
-            .attr('stroke',d=>colorItem(d.name));
+            .attr('marker-end', d=>`url(#arrow${fixName2Class(d.name===colorMode?'blue':'black')})`)
+            .attr('stroke',d=>d.name===colorMode?'blue':'black');
         g.select('.axisHolder').selectAll('text.axis').data(axis)
             .join('text')
             .attr('class','axis')
@@ -213,7 +232,7 @@ const vizControl = function(){
             .attr('dx',d=>d.x2>0?6:-6)
             .attr('dy',d=>d.y2>0?16:-6)
             .text(d=>d.name)
-            .attr('stroke',d=>colorItem(d.name))
+            .attr('stroke',d=>d.name===colorMode?'blue':'black');
 
         return master;
     };
@@ -232,6 +251,15 @@ const vizControl = function(){
             return master;
         }else
             return {data,dataArr};
+    }
+    master.colorMode = function(_data) {
+        if (arguments.length){
+            colorMode = _data;
+            master.draw();
+            return master;
+        }else{
+            return colorMode
+        }
     }
     master.vizMode = function(_data) {
         if (arguments.length){
