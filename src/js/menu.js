@@ -3,6 +3,10 @@ function initMenu(){
     d3.select('#vizMode').on('change',function(){
         viz.vizMode(this.value);
     });
+    d3.select('#itemMode')
+        .on('change',function(){
+            viz.drawMode(this.value);
+        })
     d3.select('#colorMode')
         .on('change',function(){
             viz.colorMode(this.value);

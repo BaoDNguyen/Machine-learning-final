@@ -182,7 +182,7 @@ const vizControl = function(){
     }
     master.draw = function(){
         const items = g.select('.drawArea').selectAll('g.item')
-            .data(data)
+            .data(data,d=>d.id)
             .join('g')
             .attr('class','item')
             .attr('transform',d=>`translate(${xscale(d.x)},${yscale(d.y)})`)
@@ -205,6 +205,7 @@ const vizControl = function(){
         items.selectAll('image')
             .data(d=>[d])
             .join('image')
+            .style('display',graphicopt.drawMode==='image'?'block':'none')
             .attr('x',-graphicopt.imageSize/2)
             .attr('y',-graphicopt.imageSize/2)
             .attr('width',graphicopt.imageSize)
@@ -259,6 +260,15 @@ const vizControl = function(){
             return master;
         }else{
             return colorMode
+        }
+    }
+    master.drawMode = function(_data) {
+        if (arguments.length){
+            graphicopt.drawMode = _data;
+            master.draw();
+            return master;
+        }else{
+            return graphicopt.drawMode
         }
     }
     master.vizMode = function(_data) {
