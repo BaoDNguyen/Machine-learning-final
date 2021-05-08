@@ -192,10 +192,12 @@ const vizControl = function(){
                     .attr('class','img-fluid');
                 g.select('.drawArea').selectAll('g.item').style('opacity',0.1);
                 d3.select(this).style('opacity',1);
+                updateViolinCurve(d);
             })
             .on('mouseleave',function(d){
                 d3.select('#detailItem').selectAll('*').remove();
-                g.select('.drawArea').selectAll('g.item').style('opacity',null)
+                g.select('.drawArea').selectAll('g.item').style('opacity',null);
+                updateViolinCurve();
             });
         items.selectAll('circle')
             .data(d=>[d])

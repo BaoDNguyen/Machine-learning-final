@@ -16,22 +16,27 @@ function initMenu(){
         .join('option')
         .attr('value',d=>d)
         .text(d=>d);
-    d3.select('#metricHolder').select('.metricSum').datum('metric')
-    const conceptHolder = d3.select('#conceptHolder')
+
+    let axis = ['metric',...concepts];
+    const conceptHolder = d3.select('#conceptSVG')
+        .attr('width','100%')
+        .attr('height',violiin_chart.graphicopt().height*axis.length)
         .selectAll('.metricSum')
-            .data(concepts)
-        .join('div')
-        .attr('class','metricSum row');
-    conceptHolder.selectAll('span')
+            .data(axis)
+            .join('g')
+            .attr('class','metricSum')
+            .attr('transform',(d,i)=>`translate(${0},${violiin_chart.graphicopt().height*i})`);
+    conceptHolder.selectAll('text.labelM')
         .data(d=>[d])
-        .join('span')
-        .attr('class','col-3')
-        .style('padding',0)
+        .join('text')
+        .attr('y',violiin_chart.graphicopt().height/2)
+        .attr('class','labelM')
         .text(d=>d);
-    conceptHolder.selectAll('svg')
+    conceptHolder.selectAll('g')
         .data(d=>[d])
-        .join('svg')
-        .attr('class','plotHolder col-9');
+        .join('g')
+        .attr('transform',`translate(${70},0)`)
+        .attr('class','plotHolder');
     drawviolin();
 }
 
@@ -46,11 +51,24 @@ function updateProcess(message,div){
         holder.select('.processText').text(message.text??'');
     }
 }
-
+function updateViolinCurve(d){
+    if(d){
+        let axis = ['metric',...concepts];
+        let xscale = d3.scaleLinear().range([0,violiin_chart.graphicopt().widthG()]);
+        d3.select('#conceptSVG').selectAll('path.item').data([d])
+            .join('path')
+            .attr('class','item')
+            .attr('fill','none')
+            .attr('stroke','red')
+            .attr('transform',`translate(${70+violiin_chart.graphicopt().margin.left},${violiin_chart.graphicopt().height*0.5})`)
+            .attr('d',d=>d3.line().x(d=>xscale(d)).y((d,i)=>violiin_chart.graphicopt().height*i)(axis.map(a=>d[a])))
+    }else{
+        d3.select('#conceptSVG').select('path.item').remove();
+    }
+}
 function drawviolin(){
     violiin_chart.graphicopt({isStack: false});
-    plotViolin(d3.selectAll('#conceptHolder .metricSum'))
-    plotViolin(d3.select('#metricHolder .metricSum'))
+    plotViolin(d3.selectAll('#conceptSVG .metricSum'));
 }
 
 function plotViolin(holder) {
@@ -71,8 +89,6 @@ function plotViolin(holder) {
             dimensiondata[d] = {key: d, value: value, color: color};
         });
         holder.select('.plotHolder')
-            .attr('width',violiin_chart.graphicopt().width)
-            .attr('height',violiin_chart.graphicopt().height)
             .each(function (d) {
                 if (dimensiondata[d]) {
                     violiin_chart.graphicopt({
