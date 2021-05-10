@@ -1,5 +1,8 @@
 function initMenu(){
     $('#legendHolder').draggable({ handle: ".card-header" ,containment: "parent", scroll: false });
+    d3.select('#search').on('change',function(){
+        d3.selectAll('.item').filter(d=>d.id.includes(this.value)).dispatch('click')
+    })
     d3.select('#vizMode').on('change',function(){
         viz.vizMode(this.value);
     });
@@ -45,6 +48,8 @@ function initMenu(){
         .attr('transform',`translate(${70},0)`)
         .attr('class','plotHolder');
     drawviolin();
+
+
 }
 
 function updateProcess(message,div){

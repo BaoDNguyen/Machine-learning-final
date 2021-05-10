@@ -266,18 +266,35 @@ const vizControl = function(){
             .on('click',function(d){d3.select(this).dispatch('mouseover') ;freezeHandle.bind(this)();})
             .on('mouseover',function(d){
                 if (!isFreeze) {
+                    const part = d.id.split('/');
+                    const title = part[2]+'/'+part[3];
                     d3.select('#detailItem')
                         .selectAll('img')
                         .data([d])
                         .join('img')
                         .attr('src', d.id)
-                        .attr('class', 'img-fluid');
+                        .attr('class', 'img-fluid')
+                        .on('click',function(d){
+                            d3.select('#detailImages').select('#detailImagesLabel').text(title);
+                            debugger
+                            let holders= d3.select('#imageHolder')
+                                .selectAll('div.holder').data([{title:'main',src:d.id},...concepts.map((c,i)=>({title:`${c} = ${Math.round (d[c]*100)/100}`,src:`data/img_highlighted/${d.id.split('/')[2]}/concept_${i}/${d.id.split('/')[3].replace('jpg','png')}`}))])
+                                .join('div')
+                                .attr('class','col-3 holder');
+                            holders.selectAll('img').data(d=>[d]).join('img')
+                                .attr('class', 'img-fluid')
+                                .attr('src', d=>d.src);
+                            holders.selectAll('h6').data(d=>[d]).join('h6')
+                                .style('text-align', 'center')
+                                .text( d=>d.title);
+                            $('#detailImages').modal('show')
+                        });
                     d3.select('#detailItem')
                         .selectAll('h6.imageTitle')
                         .data([d])
                         .join('h6')
                         .attr('class', 'imageTitle')
-                        .text(d=>d.id.split('/')[3]);
+                        .text(title);
                     g.select('.drawArea').selectAll('g.item').style('opacity', 0.1);
                     d3.select(this).style('opacity', 1);
                     updateViolinCurve(d);

@@ -14,6 +14,7 @@
     <script src="lib/d3-selection-multi.v1.min.js"></script>
     <script src="lib/underscore-min.js"></script>
     <script src="lib/simple-statistics.min.js"></script>
+    <script src="lib/bootstrap.bundle.js"></script>
 <!--css-->
     <link id="theme" rel="stylesheet" href="src/style/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="lib/DataTables/DataTables-1.10.21/css/dataTables.bootstrap4.css"/>
@@ -65,6 +66,7 @@
                     <div class="card-body row" id="controlOnToolbarHolder">
                         <div id="controlOnToolbar" class="row" data-maximize="controlOnToolbarHolder" data-minimize="controlHolderMenu">
                             <!--                                <label class="col-4" for="innerDisplay">Central nodes display: </label>-->
+                            <input class="col-12" placeholder="Search" id="search">
                             <label class="col-5" for="normalizationMode"> Normalization: </label>
                             <select class="col-7" id="normalizationMode" onchange="main(this.value)">
                                 <option selected value="concept"> concept </option>
@@ -108,6 +110,23 @@
                     </div>
                 </div>
             </main>
+        </div>
+        <div class="modal fade" id="detailImages" tabindex="-1" role="dialog" aria-labelledby="detailImages" aria-hidden="true">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="detailImagesLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row" id="imageHolder">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
