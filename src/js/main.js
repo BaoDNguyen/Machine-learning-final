@@ -1,8 +1,8 @@
 viz = vizControl();
-function main (fileName) {
-    d3.csv(fileName).then(file => {
+function main (normalizationMethod) {
+    d3.csv("./data/concept_score.csv").then(file => {
         readFile(file);
-        normalization();
+        normalization(normalizationMethod);
         compute_metric();
 
         // UI init
@@ -15,4 +15,4 @@ function main (fileName) {
     });
 }
 
-main('./data/concept_score.csv');
+main('concept');

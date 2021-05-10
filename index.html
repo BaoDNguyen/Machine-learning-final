@@ -65,10 +65,10 @@
                     <div class="card-body row" id="controlOnToolbarHolder">
                         <div id="controlOnToolbar" class="row" data-maximize="controlOnToolbarHolder" data-minimize="controlHolderMenu">
                             <!--                                <label class="col-4" for="innerDisplay">Central nodes display: </label>-->
-                            <label class="col-5" for="dataMode"> Data set: </label>
-                            <select class="col-7" id="dataMode" onchange="main(this.value)">
-                                <option selected value="./data/concept_score.csv"> 8th layer </option>
-                                <option value="./data/concept_score.csv"> 16th layer </option>
+                            <label class="col-5" for="normalizationMode"> Normalization: </label>
+                            <select class="col-7" id="normalizationMode" onchange="main(this.value)">
+                                <option selected value="concept"> concept </option>
+                                <option value="image"> image </option>
                             </select>
                             <label class="col-5" for="vizMode">Projection method: </label>
                             <select class="col-7" id="vizMode">
