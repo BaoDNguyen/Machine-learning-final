@@ -10,7 +10,7 @@ function normalization (method) {
     data = rawData.map((d,j)=>{
         dataArr[j]=[];
         // return {...d}
-        return {};
+        return {id: d.id};
     });
     if (method === 'concept') {
         for (let i = 0; i < concepts.length; i++) {
