@@ -39,6 +39,7 @@ const vizControl = function(){
             // schema:serviceFullList
         },
     };
+    let isFreeze = false;
     let umapopt={},tsneopt={dim:2};
     let maindiv='#vizHolder';
     let svg,g;
@@ -56,7 +57,12 @@ const vizControl = function(){
         graphicopt.height = d3.select(maindiv).node().getBoundingClientRect().height;
         svg = d3.select(maindiv).select('.mainLayout');
         svg.attr('width',graphicopt.width)
-            .attr('height',graphicopt.height);
+            .attr('height',graphicopt.height)
+            .on('click',()=>{if (isFreeze){
+                const func = isFreeze;
+                isFreeze = false;
+                func();
+            }});
         g = svg.select("g.content");
         if (g.empty()){
             g = svg
@@ -180,24 +186,44 @@ const vizControl = function(){
             yscale.domain([yrange[0] - delta, yrange[1] + delta])
         }
     }
+    function freezeHandle(){
+        if (isFreeze){
+            const func = isFreeze;
+            isFreeze = false;
+            selectedTarget = undefined;
+            func();
+        }else{
+            isFreeze = true;
+            isFreeze = (function(){d3.select(this).dispatch('mouseout')}).bind(this);
+            d3.event.stopPropagation();
+        }
+    }
     master.draw = function(){
         const items = g.select('.drawArea').selectAll('g.item')
             .data(data,d=>d.id)
             .join('g')
             .attr('class','item')
             .attr('transform',d=>`translate(${xscale(d.x)},${yscale(d.y)})`)
+            .on('click',function(d){d3.select(this).dispatch('mouseover') ;freezeHandle.bind(this)();})
             .on('mouseover',function(d){
-                d3.select('#detailItem').append('img')
-                    .attr('src',d.id)
-                    .attr('class','img-fluid');
-                g.select('.drawArea').selectAll('g.item').style('opacity',0.1);
-                d3.select(this).style('opacity',1);
-                updateViolinCurve(d);
+                if (!isFreeze) {
+                    d3.select('#detailItem')
+                        .selectAll('img')
+                        .data([d])
+                        .join('img')
+                        .attr('src', d.id)
+                        .attr('class', 'img-fluid');
+                    g.select('.drawArea').selectAll('g.item').style('opacity', 0.1);
+                    d3.select(this).style('opacity', 1);
+                    updateViolinCurve(d);
+                }
             })
             .on('mouseleave',function(d){
-                d3.select('#detailItem').selectAll('*').remove();
-                g.select('.drawArea').selectAll('g.item').style('opacity',null);
-                updateViolinCurve();
+                if (!isFreeze) {
+                    d3.select('#detailItem').selectAll('*').remove();
+                    g.select('.drawArea').selectAll('g.item').style('opacity', null);
+                    updateViolinCurve();
+                }
             });
         items.selectAll('circle')
             .data(d=>[d])

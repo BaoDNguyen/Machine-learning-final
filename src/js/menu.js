@@ -6,10 +6,14 @@ function initMenu(){
     d3.select('#itemMode')
         .on('change',function(){
             viz.drawMode(this.value);
-        })
+        });
     d3.select('#colorMode')
         .on('change',function(){
             viz.colorMode(this.value);
+            d3.select('#conceptSVG').selectAll('g.metricSum').select('text.labelM').attr('fill',null);
+            d3.select('#conceptSVG').selectAll('g.metricSum')
+                .filter(d=>d===this.value)
+                .select('text.labelM').attr('fill','blue');
         })
         .selectAll('option')
         .data(['metric',...concepts])
@@ -26,12 +30,15 @@ function initMenu(){
             .join('g')
             .attr('class','metricSum')
             .attr('transform',(d,i)=>`translate(${0},${violiin_chart.graphicopt().height*i})`);
+    let colorMode = d3.select('#colorMode').node().value;
     conceptHolder.selectAll('text.labelM')
         .data(d=>[d])
         .join('text')
         .attr('y',violiin_chart.graphicopt().height/2)
         .attr('class','labelM')
+        .attr('fill',d=>d===colorMode?'blue':null)
         .text(d=>d);
+
     conceptHolder.selectAll('g')
         .data(d=>[d])
         .join('g')
