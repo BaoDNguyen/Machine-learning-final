@@ -35,5 +35,19 @@ function normalization (method) {
                 dataArr[i].push(data[i][concepts[j]]);
             }
         }
+    } else if (method === 'both') {
+        let myMax = -Infinity, myMin = Infinity;
+        for (let i = 0; i < rawData.length; i++) {
+            for (let j = 0; j < concepts.length; j++) {
+                if (rawData[i][concepts[j]] > myMax) myMax = rawData[i][concepts[j]];
+                if (rawData[i][concepts[j]] < myMin) myMin = rawData[i][concepts[j]];
+            }
+        }
+        for (let i = 0; i < rawData.length; i++) {
+            for (let j = 0; j < concepts.length; j++) {
+                data[i][concepts[j]] = (rawData[i][concepts[j]]-myMin)/(myMax-myMin);
+                dataArr[i].push(data[i][concepts[j]]);
+            }
+        }
     }
 }
