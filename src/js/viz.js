@@ -235,7 +235,8 @@ const vizControl = function(){
             .attr('dx',d=>d.x2>0?6:-6)
             .attr('dy',d=>d.y2>0?16:-6)
             .text(d=>d.name)
-            .attr('stroke',d=>d.name===colorMode?'blue':'black');
+            .attr('stroke',d=>d.name===colorMode?'blue':'black')
+            .style('font-size','18');
 
         return master;
     };

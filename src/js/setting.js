@@ -17,5 +17,5 @@ let metric = [];
 
 let viz = {};
 // violin
-let violiin_chart = d3.viiolinChart().graphicopt({width:200 ,height:25,opt:{dataformated:true},stroke:'black',isStack:false,midleTick:true,showOutlier:false,direction:'h',margin: {top: 0, right: 10, bottom: 0, left: 10},middleAxis:{'stroke-width':0.5},ticks:{'stroke-width':0.5}})
+let violiin_chart = d3.viiolinChart().graphicopt({width:200 ,height:25,opt:{dataformated:true},stroke:'purple',isStack:false,midleTick:true,showOutlier:false,direction:'h',margin: {top: 0, right: 10, bottom: 0, left: 10},middleAxis:{'stroke-width':0.5},ticks:{'stroke-width':0.5}})
     .setTicksDisplay([0,1]);

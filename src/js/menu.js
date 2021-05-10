@@ -78,7 +78,8 @@ function plotViolin(holder) {
         let dimGlobal = [0, 0];
         let dimensiondata = {};
         holder.data().forEach(d => {
-            let color = () => "#ddd";
+            // let color = () => "#ddd";
+            let color = () => "#997ff3";
 
             let value = [];
 
@@ -131,7 +132,8 @@ function axisHistogram(text,range,d){
             axis: text,
             q1: ss.quantile(d, 0.25),
             q3: ss.quantile(d, 0.75),
-            median: ss.median(d),
+            // median: ss.median(d),
+            median: ss.mean(d),
             // outlier: ,
             arr: sumstat
         };
