@@ -9,7 +9,8 @@ function normalization (method) {
     dataArr = [];
     data = rawData.map((d,j)=>{
         dataArr[j]=[];
-        return {...d}
+        // return {...d}
+        return {};
     });
     if (method === 'concept') {
         for (let i = 0; i < concepts.length; i++) {
