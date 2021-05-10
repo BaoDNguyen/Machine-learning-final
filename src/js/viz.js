@@ -95,7 +95,66 @@ const vizControl = function(){
         }
         xscale = d3.scaleLinear().range([0, graphicopt.widthG()]);
         yscale = d3.scaleLinear().range([0, graphicopt.heightG()]);
+        // legend
+        makelegend();
+
         return master
+    }
+    function makelegend(){
+        // legend
+        const marginTop = 0;
+        const marginBottom = 0;
+        const marginLeft = 10;
+        const marginRight = 10;
+        const width = 250;
+        const height = 21;
+        const svg = d3.select('#legendColor')
+            .attr('width', width + marginLeft + marginRight)
+            .attr('height', height + marginTop + marginBottom);
+        svg.select('g.legend').remove();
+        let legend = svg.append('g').attr('class', 'legend')
+            .attr('transform', `translate(${marginLeft},${marginTop})`);
+
+        let y = Object.assign(color.copy()
+                .interpolator(d3.interpolateRound(width, 0)),
+            {
+                range() {
+                    return [0, width];
+                }
+            });
+
+        legend.append("image")
+            .attr("x", 0)
+            .attr("y", 0)
+            .attr("width", width)
+            .attr("height", height)
+            .attr("preserveAspectRatio", "none")
+            .attr("xlink:href", ramp(color.interpolator()).toDataURL());
+
+
+            graphicopt.legend = {scale: y};
+            legend.append('g').attr('class', 'legendTick').call(d3.axisBottom(y).ticks(3))
+                .selectAll('text').attr('dx',(d,i)=>i===0?6:(i===2?-6:0))
+                .text(d=>d==='0.0'?0:(d==='1.0'?1:d));
+
+
+
+        function ramp(color, n = 256) {
+            const canvas = createContext(n, 1);
+            const context = canvas.getContext("2d");
+            for (let i = 0; i < n; ++i) {
+                context.fillStyle = color((1-i / (n - 1)));
+                context.fillRect(i, 0, 1, 1);
+            }
+            return canvas;
+        }
+
+        function createContext(width, height) {
+            var canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            return canvas;
+        }
     }
     function zoomed(){
         g.attr("transform", d3.event.transform);
