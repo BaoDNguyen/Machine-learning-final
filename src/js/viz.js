@@ -213,6 +213,12 @@ const vizControl = function(){
                         .join('img')
                         .attr('src', d.id)
                         .attr('class', 'img-fluid');
+                    d3.select('#detailItem')
+                        .selectAll('h6.imageTitle')
+                        .data([d])
+                        .join('h6')
+                        .attr('class', 'imageTitle')
+                        .text(d=>d.id.split('/')[3]);
                     g.select('.drawArea').selectAll('g.item').style('opacity', 0.1);
                     d3.select(this).style('opacity', 1);
                     updateViolinCurve(d);
